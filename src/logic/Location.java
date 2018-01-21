@@ -1,4 +1,4 @@
-package Parkeersimulator;
+package logic;
 
 public class Location {
 

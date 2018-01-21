@@ -1,4 +1,4 @@
-package Parkeersimulator;
+package logic;
 
 import java.awt.*;
 
