@@ -2,6 +2,7 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import logic.*;
 
 public class SimulatorView extends JFrame {
     /**
@@ -13,14 +14,14 @@ public class SimulatorView extends JFrame {
     private int numberOfRows;
     private int numberOfPlaces;
     private int numberOfOpenSpots;
-    private logic.Car[][][] cars;
+    private Car[][][] cars;
 
     public SimulatorView(int numberOfFloors, int numberOfRows, int numberOfPlaces) {
         this.numberOfFloors = numberOfFloors;
         this.numberOfRows = numberOfRows;
         this.numberOfPlaces = numberOfPlaces;
         this.numberOfOpenSpots =numberOfFloors*numberOfRows*numberOfPlaces;
-        cars = new logic.Car[numberOfFloors][numberOfRows][numberOfPlaces];
+        cars = new Car[numberOfFloors][numberOfRows][numberOfPlaces];
         
         carParkView = new CarParkView();
 
@@ -52,18 +53,18 @@ public class SimulatorView extends JFrame {
     	return numberOfOpenSpots;
     }
     
-    public logic.Car getCarAt(logic.Location location) {
+    public Car getCarAt(Location location) {
         if (!locationIsValid(location)) {
             return null;
         }
         return cars[location.getFloor()][location.getRow()][location.getPlace()];
     }
 
-    public boolean setCarAt(logic.Location location, logic.Car car) {
+    public boolean setCarAt(Location location, Car car) {
         if (!locationIsValid(location)) {
             return false;
         }
-        logic.Car oldCar = getCarAt(location);
+        Car oldCar = getCarAt(location);
         if (oldCar == null) {
             cars[location.getFloor()][location.getRow()][location.getPlace()] = car;
             car.setLocation(location);
@@ -73,11 +74,11 @@ public class SimulatorView extends JFrame {
         return false;
     }
 
-    public logic.Car removeCarAt(logic.Location location) {
+    public Car removeCarAt(Location location) {
         if (!locationIsValid(location)) {
             return null;
         }
-        logic.Car car = getCarAt(location);
+        Car car = getCarAt(location);
         if (car == null) {
             return null;
         }
@@ -87,11 +88,11 @@ public class SimulatorView extends JFrame {
         return car;
     }
 
-    public logic.Location getFirstFreeLocation() {
+    public Location getFirstFreeLocation() {
         for (int floor = 0; floor < getNumberOfFloors(); floor++) {
             for (int row = 0; row < getNumberOfRows(); row++) {
                 for (int place = 0; place < getNumberOfPlaces(); place++) {
-                	logic.Location location = new logic.Location(floor, row, place);
+                	Location location = new Location(floor, row, place);
                     if (getCarAt(location) == null) {
                         return location;
                     }
@@ -101,12 +102,12 @@ public class SimulatorView extends JFrame {
         return null;
     }
 
-    public logic.Car getFirstLeavingCar() {
+    public Car getFirstLeavingCar() {
         for (int floor = 0; floor < getNumberOfFloors(); floor++) {
             for (int row = 0; row < getNumberOfRows(); row++) {
                 for (int place = 0; place < getNumberOfPlaces(); place++) {
-                	logic.Location location = new logic.Location(floor, row, place);
-                	logic.Car car = getCarAt(location);
+                	Location location = new Location(floor, row, place);
+                	Car car = getCarAt(location);
                     if (car != null && car.getMinutesLeft() <= 0 && !car.getIsPaying()) {
                         return car;
                     }
@@ -120,8 +121,8 @@ public class SimulatorView extends JFrame {
         for (int floor = 0; floor < getNumberOfFloors(); floor++) {
             for (int row = 0; row < getNumberOfRows(); row++) {
                 for (int place = 0; place < getNumberOfPlaces(); place++) {
-                	logic.Location location = new logic.Location(floor, row, place);
-                	logic.Car car = getCarAt(location);
+                	Location location = new Location(floor, row, place);
+                	Car car = getCarAt(location);
                     if (car != null) {
                         car.tick();
                     }
@@ -130,7 +131,7 @@ public class SimulatorView extends JFrame {
         }
     }
 
-    private boolean locationIsValid(logic.Location location) {
+    private boolean locationIsValid(Location location) {
         int floor = location.getFloor();
         int row = location.getRow();
         int place = location.getPlace();
@@ -189,8 +190,8 @@ public class SimulatorView extends JFrame {
             for(int floor = 0; floor < getNumberOfFloors(); floor++) {
                 for(int row = 0; row < getNumberOfRows(); row++) {
                     for(int place = 0; place < getNumberOfPlaces(); place++) {
-                    	logic.Location location = new logic.Location(floor, row, place);
-                    	logic.Car car = getCarAt(location);
+                    	Location location = new Location(floor, row, place);
+                    	Car car = getCarAt(location);
                         Color color = car == null ? Color.white : car.getColor();
                         drawPlace(graphics, location, color);
                     }
@@ -202,7 +203,7 @@ public class SimulatorView extends JFrame {
         /**
          * Paint a place on this car park view in a given color.
          */
-        private void drawPlace(Graphics graphics, logic.Location location, Color color) {
+        private void drawPlace(Graphics graphics, Location location, Color color) {
             graphics.setColor(color);
             graphics.fillRect(
                     location.getFloor() * 260 + (1 + (int)Math.floor(location.getRow() * 0.5)) * 75 + (location.getRow() % 2) * 20,

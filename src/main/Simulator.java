@@ -1,6 +1,8 @@
 package main;
 
 import java.util.Random;
+import logic.*;
+import view.*;
 
 public class Simulator {
 
@@ -8,11 +10,11 @@ public class Simulator {
 	private static final String PASS = "2";
 	
 	
-	private logic.CarQueue entranceCarQueue;
-    private logic.CarQueue entrancePassQueue;
-    private logic.CarQueue paymentCarQueue;
-    private logic.CarQueue exitCarQueue;
-    private view.SimulatorView simulatorView;
+	private CarQueue entranceCarQueue;
+    private CarQueue entrancePassQueue;
+    private CarQueue paymentCarQueue;
+    private CarQueue exitCarQueue;
+    private SimulatorView simulatorView;
 
     private int day = 0;
     private int hour = 0;
@@ -30,11 +32,11 @@ public class Simulator {
     int exitSpeed = 5; // number of cars that can leave per minute
 
     public Simulator() {
-        entranceCarQueue = new logic.CarQueue();
-        entrancePassQueue = new logic.CarQueue();
-        paymentCarQueue = new logic.CarQueue();
-        exitCarQueue = new logic.CarQueue();
-        simulatorView = new view.SimulatorView(3, 6, 30);
+        entranceCarQueue = new CarQueue();
+        entrancePassQueue = new CarQueue();
+        paymentCarQueue = new CarQueue();
+        exitCarQueue = new CarQueue();
+        simulatorView = new SimulatorView(3, 6, 30);
     }
     
     public static void main(String[] args) {
@@ -103,14 +105,14 @@ public class Simulator {
         addArrivingCars(numberOfCars, PASS);    	
     }
 
-    private void carsEntering(logic.CarQueue queue){
+    private void carsEntering(CarQueue queue){
         int i=0;
         // Remove car from the front of the queue and assign to a parking space.
     	while (queue.carsInQueue()>0 && 
     			simulatorView.getNumberOfOpenSpots()>0 && 
     			i<enterSpeed) {
-    		logic.Car car = queue.removeCar();
-    		logic.Location freeLocation = simulatorView.getFirstFreeLocation();
+    		Car car = queue.removeCar();
+    		Location freeLocation = simulatorView.getFirstFreeLocation();
             simulatorView.setCarAt(freeLocation, car);
             i++;
         }
@@ -118,7 +120,7 @@ public class Simulator {
     
     private void carsReadyToLeave(){
         // Add leaving cars to the payment queue.
-    	logic.Car car = simulatorView.getFirstLeavingCar();
+    	Car car = simulatorView.getFirstLeavingCar();
         while (car!=null) {
         	if (car.getHasToPay()){
 	            car.setIsPaying(true);
@@ -135,7 +137,7 @@ public class Simulator {
         // Let cars pay.
     	int i=0;
     	while (paymentCarQueue.carsInQueue()>0 && i < paymentSpeed){
-    		logic.Car car = paymentCarQueue.removeCar();
+    		Car car = paymentCarQueue.removeCar();
             // TODO Handle payment.
             carLeavesSpot(car);
             i++;
@@ -181,7 +183,7 @@ public class Simulator {
     	}
     }
     
-    private void carLeavesSpot(logic.Car car){
+    private void carLeavesSpot(Car car){
     	simulatorView.removeCarAt(car.getLocation());
         exitCarQueue.addCar(car);
     }
