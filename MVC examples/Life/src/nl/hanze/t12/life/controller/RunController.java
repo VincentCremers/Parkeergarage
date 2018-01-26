@@ -7,58 +7,54 @@ import nl.hanze.t12.life.logic.*;
 
 public class RunController extends AbstractController implements ActionListener {
 	private static final long serialVersionUID = -8776795932665582315L;
-	//private JButton stepOne;
-	//private JTextField steps;
-	private JButton startSteps;
-	private JButton stopSteps;
+	private JButton mineen;
+	private JButton pluseen;
+	private JButton start;
+	private JButton stop;
 	
 	public RunController(LifeLogic life) {
 		super(life);
-		setSize(500, 500);
-		//stepOne=new JButton("One step");
-		//stepOne.addActionListener(this);
-		//steps=new JTextField();
-		startSteps=new JButton("Start");
-		startSteps.addActionListener(this);
-		stopSteps=new JButton("Stop");
-		stopSteps.addActionListener(this);
+		
+		setSize(500, 50);
+		mineen=new JButton("-1");
+		mineen.addActionListener(this);
+		pluseen=new JButton("+1");
+		pluseen.addActionListener(this);
+		start=new JButton("Start");
+		start.addActionListener(this);
+		stop=new JButton("Stop");
+		stop.addActionListener(this);
 		
 		this.setLayout(null);
-		//add(stepOne);
-		//add(steps);
-		add(startSteps);
-		add(stopSteps);
-		//stepOne.setBounds(50, 10, 70, 30);
-		//steps.setBounds(140, 10, 70, 30);
-		startSteps.setBounds(229, 10, 70, 30);
-		stopSteps.setBounds(319, 10, 70, 30);
+		add(mineen);
+		add(pluseen);
+		add(start);
+		add(stop);
+		mineen.setBounds(50, 10, 70, 30);
+		pluseen.setBounds(140, 10, 70, 30);
+		start.setBounds(229, 10, 70, 30);
+		stop.setBounds(319, 10, 70, 30);
 
 		setVisible(true);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		/*if (e.getSource()==stepOne) {
-			try {
-				life.doStep();
-			} catch (LifeException ex) {
-				ex.printStackTrace();
-			}
-			return;
-		}*/
-		
-		if (e.getSource()==startSteps) {
-			life.run();
-			}
-		
-		
-		if (e.getSource()==stopSteps) {
-			life.stopSteps();
+		if (e.getSource()==mineen) {
+			LifeLogic.setNumberOfOpenSpots(LifeLogic.getNumberOfOpenSpots()+1);
 		}
 		
-	}
+		if (e.getSource()==pluseen) {
+			LifeLogic.setNumberOfOpenSpots(LifeLogic.getNumberOfOpenSpots()-1);
+		}
+		
+		if (e.getSource()==start) {
+			LifeLogic.run();
+		}
+		
+		if (e.getSource()==stop) {
+			LifeLogic.stopSteps();
+		}
 	
-	/*private int parseSteps() throws NumberFormatException {
-		return Integer.parseInt(steps.getText());
-	}*/
+}
 }

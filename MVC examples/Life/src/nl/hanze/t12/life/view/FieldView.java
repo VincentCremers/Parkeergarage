@@ -57,16 +57,11 @@ public class FieldView extends AbstractView {
                 20 - 1,
                 10 - 1); // TODO use dynamic size or constants
     }
-}
-	
-	
-	
-	
-	
-	/* public void paintComponent(Graphics g) {
+
+	 public void paintComponent(Graphics g) {
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, 200, 200);
-		g.setColor(Color.BLUE);
+	/*	g.setColor(Color.BLUE);
 
 		Car[][][] cars=life.getState();
 		
@@ -83,6 +78,8 @@ public class FieldView extends AbstractView {
 				
 
 	}
-	//g.fillRect(margin+4*i, margin+4*j, 3, 3);
-	 */
+	//g.fillRect(margin+4*i, margin+4*j, 3, 3)
+	 */  
+}
+}
 

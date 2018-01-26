@@ -58,6 +58,10 @@ public class LifeLogic extends AbstractModel implements Runnable {
 	private int numOfSteps;
 	private boolean run;
 	
+	public void setNumberOfOpenSpots(int numberOfOpenSpots) {
+		this.numberOfOpenSpots = numberOfOpenSpots;
+	}
+
 	public LifeLogic() {
 		size=MIN_SIZE-1;
 		//degree=MIN_DEGREE-1;
@@ -74,7 +78,7 @@ public class LifeLogic extends AbstractModel implements Runnable {
         this.numberOfFloors = 4;
         this.numberOfRows = 8;
         this.numberOfPlaces = 20;
-        this.numberOfOpenSpots =numberOfFloors*numberOfRows*numberOfPlaces;
+        this.setNumberOfOpenSpots(numberOfFloors*numberOfRows*numberOfPlaces);
         cars = new Car[numberOfFloors][numberOfRows][numberOfPlaces];
         
 
@@ -97,19 +101,9 @@ public class LifeLogic extends AbstractModel implements Runnable {
 		initRun=false;
 	}
 	
-	public void setDegree(float degree) throws LifeException {
-		if (degree<MIN_DEGREE) 
-			throw new LifeException("Degree too small");
-		if (degree>MAX_DEGREE)
-			throw new LifeException("Degree too large");
-		//this.degree=degree;
-		degreeIsSet=true;
-		initRun=false;
-	}
-	
 	public void doStep() throws LifeException {
-		if (!sizeIsSet || !degreeIsSet)
-			throw new LifeException("Size and/or degree is not set yet");
+		if (!sizeIsSet)
+			throw new LifeException("Size is not set yet");
 		if (!initRun)
 			throw new LifeException("Run init first");
 		calculateRound();
@@ -117,8 +111,8 @@ public class LifeLogic extends AbstractModel implements Runnable {
 	}
 	
 	public void doSteps(int numOfSteps) throws LifeException {
-		if (!sizeIsSet || !degreeIsSet)
-			throw new LifeException("Size and/or degree is not set yet");
+		if (!sizeIsSet)
+			throw new LifeException("Size is not set yet");
 		if (!initRun)
 			throw new LifeException("Run init first");
 		this.numOfSteps=numOfSteps;
@@ -134,17 +128,14 @@ public class LifeLogic extends AbstractModel implements Runnable {
 		return cars;
 	}
 	
-/*	public void randomInit() throws LifeException {
-		if (!sizeIsSet || !degreeIsSet)
-			throw new LifeException("Size and/or degree is not set yet");
+	public void randomInit() throws LifeException {
+		if (!sizeIsSet)
+			throw new LifeException("Size is not set yet");
 		for(int i=0;i<size;i++)
 			for(int j=0;j<size;j++)
-				if (r.nextFloat()<=degree) fieldOriginal[i][j]=1; else fieldOriginal[i][j]=0;
 		initRun=true;
 		notifyViews();
 	}
-	
-	*/
 
 	@Override
 	public void run() {
@@ -237,7 +228,7 @@ public class LifeLogic extends AbstractModel implements Runnable {
         if (oldCar == null) {
             cars[location.getFloor()][location.getRow()][location.getPlace()] = car;
             car.setLocation(location);
-            numberOfOpenSpots--;
+            setNumberOfOpenSpots(getNumberOfOpenSpots() - 1);
             return true;
         }
         return false;
@@ -253,7 +244,7 @@ public class LifeLogic extends AbstractModel implements Runnable {
         }
         cars[location.getFloor()][location.getRow()][location.getPlace()] = null;
         car.setLocation(null);
-        numberOfOpenSpots++;
+        setNumberOfOpenSpots(getNumberOfOpenSpots() + 1);
         return car;
     }
 
@@ -402,8 +393,4 @@ public class LifeLogic extends AbstractModel implements Runnable {
     	this.removeCarAt(car.getLocation());
         exitCarQueue.addCar(car);
     }
-
-	
-	
-	
 }
