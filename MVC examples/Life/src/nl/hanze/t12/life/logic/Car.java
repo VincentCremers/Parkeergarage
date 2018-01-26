@@ -54,6 +54,8 @@ public abstract class Car {
         minutesLeft--;
     }
     
+   
+    
     public abstract Color getColor();
     
 }

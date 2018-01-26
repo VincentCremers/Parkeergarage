@@ -17,9 +17,9 @@ public class LifeLogic extends AbstractModel implements Runnable {
 	private boolean sizeIsSet;
 	
 	//private float degree;
-	private static final float MIN_DEGREE=0.0f;
-	private static final float MAX_DEGREE=1.0f;
-	private boolean degreeIsSet;
+	//private static final float MIN_DEGREE=0.0f;
+	//private static final float MAX_DEGREE=1.0f;
+	//private boolean degreeIsSet;
 	
 	private static final String AD_HOC = "1";
 	private static final String PASS = "2";
@@ -37,7 +37,7 @@ public class LifeLogic extends AbstractModel implements Runnable {
     private int numberOfRows;
     private int numberOfPlaces;
     private int numberOfOpenSpots;
-    private Car[][][] cars;
+    public Car[][] cars;
 	//private Random r;
 
     private int day = 0;
@@ -55,7 +55,6 @@ public class LifeLogic extends AbstractModel implements Runnable {
     int paymentSpeed = 7; // number of cars that can pay per minute
     int exitSpeed = 5; // number of cars that can leave per minute
 	
-	private int numOfSteps;
 	private boolean run;
 	
 	public void setNumberOfOpenSpots(int numberOfOpenSpots) {
@@ -66,7 +65,7 @@ public class LifeLogic extends AbstractModel implements Runnable {
 		size=MIN_SIZE-1;
 		//degree=MIN_DEGREE-1;
 		sizeIsSet=false;
-		degreeIsSet=false;
+		//degreeIsSet=false;
 		//r=new Random();
 		run=false;
 
@@ -75,16 +74,16 @@ public class LifeLogic extends AbstractModel implements Runnable {
         paymentCarQueue = new CarQueue();
         exitCarQueue = new CarQueue();
 	
-        this.numberOfFloors = 4;
+        //this.numberOfFloors = numberOfFloors;
         this.numberOfRows = 8;
         this.numberOfPlaces = 20;
-        this.setNumberOfOpenSpots(numberOfFloors*numberOfRows*numberOfPlaces);
-        cars = new Car[numberOfFloors][numberOfRows][numberOfPlaces];
+        this.setNumberOfOpenSpots(numberOfRows*numberOfPlaces);
+        cars = new Car[numberOfRows][numberOfPlaces];
         
 
 /*        Container contentPane = getContentPane();
         contentPane.add(carParkView, BorderLayout.CENTER);
-        pack(); ssdfg
+        pack(); 
         setVisible(true);*/
 
 	}
@@ -110,36 +109,21 @@ public class LifeLogic extends AbstractModel implements Runnable {
 		notifyViews();
 	}
 	
-	public void doSteps(int numOfSteps) throws LifeException {
-		if (!sizeIsSet)
-			throw new LifeException("Size is not set yet");
-		if (!initRun)
-			throw new LifeException("Run init first");
-		this.numOfSteps=numOfSteps;
-		run=true;
-		new Thread(this).start();
-	}
-	
-	public void stopSteps() {
-		run=false;
-	}
-	
-	public Car[][][] getState() {
+	public Car[][] getState() {
 		return cars;
 	}
 	
-	public void randomInit() throws LifeException {
-		if (!sizeIsSet)
-			throw new LifeException("Size is not set yet");
-		for(int i=0;i<size;i++)
-			for(int j=0;j<size;j++)
-		initRun=true;
-		notifyViews();
+	public void start() {
+		new Thread(this).start();
+	}
+	
+	public void stop() {
+		run=false;
 	}
 
 	@Override
 	public void run() {
-		for(int i=0;i<numOfSteps && run;i++) {
+		if(true) {
 			calculateRound();
 			notifyViews();
 			try {
@@ -148,21 +132,22 @@ public class LifeLogic extends AbstractModel implements Runnable {
 				e.printStackTrace();
 			}
 		}
-		run=false;
 	}
 
 	private void calculateRound() {
-    	//handle Entrance
-    	carsArriving();
-    	carsEntering(entrancePassQueue);
-    	carsEntering(entranceCarQueue);  	
-
-    	advanceTime();
-    	// handle Exit
-        carsReadyToLeave();
-        carsPaying();
-        carsLeaving();
-
+		if(run) {	
+	    	//handle Entrance
+	    	carsArriving();
+	    	carsEntering(entrancePassQueue);
+	    	carsEntering(entranceCarQueue);  	
+	
+	    	advanceTime();
+	    	// handle Exit
+	        carsReadyToLeave();
+	        carsPaying();
+	        carsLeaving();
+		}
+		else return;
     }
 
 	
@@ -217,16 +202,21 @@ public class LifeLogic extends AbstractModel implements Runnable {
         if (!locationIsValid(location)) {
             return null;
         }
-        return cars[location.getFloor()][location.getRow()][location.getPlace()];
+        return cars[location.getRow()][location.getPlace()];
+    }
+    
+    public boolean getCarAtLocation(int row, int place) {
+    	return cars[row][place].getHasToPay();
     }
 
     public boolean setCarAt(Location location, Car car) {
         if (!locationIsValid(location)) {
             return false;
         }
+        
         Car oldCar = getCarAt(location);
         if (oldCar == null) {
-            cars[location.getFloor()][location.getRow()][location.getPlace()] = car;
+            cars[location.getRow()][location.getPlace()] = car;
             car.setLocation(location);
             setNumberOfOpenSpots(getNumberOfOpenSpots() - 1);
             return true;
@@ -242,7 +232,7 @@ public class LifeLogic extends AbstractModel implements Runnable {
         if (car == null) {
             return null;
         }
-        cars[location.getFloor()][location.getRow()][location.getPlace()] = null;
+        cars[location.getRow()][location.getPlace()] = null;
         car.setLocation(null);
         setNumberOfOpenSpots(getNumberOfOpenSpots() + 1);
         return car;
@@ -252,7 +242,7 @@ public class LifeLogic extends AbstractModel implements Runnable {
         for (int floor = 0; floor < getNumberOfFloors(); floor++) {
             for (int row = 0; row < getNumberOfRows(); row++) {
                 for (int place = 0; place < getNumberOfPlaces(); place++) {
-                	Location location = new Location(floor, row, place);
+                	Location location = new Location(row, place);
                     if (getCarAt(location) == null) {
                         return location;
                     }
@@ -263,39 +253,38 @@ public class LifeLogic extends AbstractModel implements Runnable {
     }
 
     public Car getFirstLeavingCar() {
-        for (int floor = 0; floor < getNumberOfFloors(); floor++) {
+        
             for (int row = 0; row < getNumberOfRows(); row++) {
                 for (int place = 0; place < getNumberOfPlaces(); place++) {
-                	Location location = new Location(floor, row, place);
+                	Location location = new Location(row, place);
                 	Car car = getCarAt(location);
                     if (car != null && car.getMinutesLeft() <= 0 && !car.getIsPaying()) {
                         return car;
                     }
                 }
             }
-        }
+        
         return null;
     }
 
     public void tick() {
-        for (int floor = 0; floor < getNumberOfFloors(); floor++) {
+      
             for (int row = 0; row < getNumberOfRows(); row++) {
                 for (int place = 0; place < getNumberOfPlaces(); place++) {
-                	Location location = new Location(floor, row, place);
+                	Location location = new Location(row, place);
                 	Car car = getCarAt(location);
                     if (car != null) {
                         car.tick();
                     }
                 }
             }
-        }
+        
     }
 
     private boolean locationIsValid(Location location) {
-        int floor = location.getFloor();
         int row = location.getRow();
         int place = location.getPlace();
-        if (floor < 0 || floor >= numberOfFloors || row < 0 || row > numberOfRows || place < 0 || place > numberOfPlaces) {
+        if (row < 0 || row > numberOfRows || place < 0 || place > numberOfPlaces) {
             return false;
         }
         return true;

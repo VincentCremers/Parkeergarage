@@ -1,15 +1,13 @@
 package nl.hanze.t12.life.logic;
 
 public class Location {
-    private int floor;
     private int row;
     private int place;
 
     /**
      * Constructor for objects of class Location
      */
-    public Location(int floor, int row, int place) {
-        this.floor = floor;
+    public Location(int row, int place) {
         this.row = row;
         this.place = place;
     }
@@ -20,7 +18,7 @@ public class Location {
     public boolean equals(Object obj) {
         if(obj instanceof Location) {
             Location other = (Location) obj;
-            return floor == other.getFloor() && row == other.getRow() && place == other.getPlace();
+            return row == other.getRow() && place == other.getPlace();
         }
         else {
             return false;
@@ -32,7 +30,7 @@ public class Location {
      * @return A string representation of the location.
      */
     public String toString() {
-        return floor + "," + row + "," + place;
+        return row + "," + place;
     }
 
     /**
@@ -42,15 +40,13 @@ public class Location {
      * @return A hashcode for the location.
      */
     public int hashCode() {
-        return (floor << 20) + (row << 10) + place;
+        return (row << 10) + place;
     }
 
     /**
      * @return The floor.
      */
-    public int getFloor() {
-        return floor;
-    }
+  
 
     /**
      * @return The row.
