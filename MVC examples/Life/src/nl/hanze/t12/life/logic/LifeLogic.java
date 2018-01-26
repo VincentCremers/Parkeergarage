@@ -45,7 +45,7 @@ public class LifeLogic extends AbstractModel implements Runnable {
     private int minute = 0;
 
     //private int tickPause = 100;
-
+  
     int weekDayArrivals= 100; // average number of arriving cars per hour
     int weekendArrivals = 200; // average number of arriving cars per hour
     int weekDayPassArrivals= 50; // average number of arriving cars per hour
@@ -84,7 +84,7 @@ public class LifeLogic extends AbstractModel implements Runnable {
 
 /*        Container contentPane = getContentPane();
         contentPane.add(carParkView, BorderLayout.CENTER);
-        pack();
+        pack(); ssdfg
         setVisible(true);*/
 
 	}
