@@ -53,9 +53,7 @@ public abstract class Car {
     public void tick() {
         minutesLeft--;
     }
-    
-   
-    
+
     public abstract Color getColor();
     
 }

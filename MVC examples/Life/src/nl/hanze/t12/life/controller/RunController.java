@@ -21,8 +21,8 @@ public class RunController extends AbstractController implements ActionListener 
 		this.setLayout(null);
 		add(start);
 		add(stop);
-		start.setBounds(229, 10, 70, 30);
-		stop.setBounds(319, 10, 70, 30);
+		start.setBounds(140, 10, 70, 30);
+		stop.setBounds(230, 10, 70, 30);
 
 		setVisible(true);
 	}

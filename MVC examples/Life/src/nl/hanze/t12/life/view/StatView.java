@@ -9,7 +9,7 @@ public class StatView extends AbstractView {
 
 	public StatView(LifeLogic life) {
 		super(life);
-		setSize(200,200);
+	//	setSize(200,200);
 	}
 
 	public void paintComponent(Graphics g) {

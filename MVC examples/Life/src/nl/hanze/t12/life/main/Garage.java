@@ -1,5 +1,7 @@
 package nl.hanze.t12.life.main;
 
+import java.awt.BorderLayout;
+
 import javax.swing.JFrame;
 
 import nl.hanze.t12.life.controller.AbstractController;
@@ -22,21 +24,22 @@ public class Garage {
 		//initController=new InitController(lifelogic);
 		runController=new RunController(lifelogic);
 		fieldView=new FieldView(lifelogic);
-		statView=new StatView(lifelogic);
+		//statView=new StatView(lifelogic);
 		
-		screen=new JFrame("The Conway game of Life");
-		screen.setSize(450, 285);
+		screen=new JFrame("Parkeergarage");
+		screen.setSize(500, 500);
 		screen.setResizable(false);
 		screen.setLayout(null);
 		screen.getContentPane().add(fieldView);
-		screen.getContentPane().add(statView);
+		//screen.getContentPane().add(statView);
 		screen.getContentPane().add(runController);
 		//screen.getContentPane().add(initController);
-		fieldView.setBounds(10, 10, 200, 200);		
-		statView.setBounds(230, 10, 200, 200);
-		runController.setBounds(0, 210, 450, 50);
+		fieldView.setBounds(10, 10, 900, 700);		
+		//statView.setBounds(230, 10, 200, 200);
+		runController.setBounds(0, 280, 450, 50);
 		//initController.setBounds(440, 10, 90, 130);
 		screen.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		screen.setVisible(true);
+		lifelogic.doStep();
 	}
 }

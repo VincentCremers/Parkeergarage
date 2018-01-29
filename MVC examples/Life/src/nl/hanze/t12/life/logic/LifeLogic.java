@@ -1,9 +1,5 @@
 package nl.hanze.t12.life.logic;
 
-import nl.hanze.t12.life.exception.*;
-
-//import java.awt.BorderLayout;
-//import java.awt.Container;
 import java.util.*;
 
 import nl.hanze.t12.life.logic.CarQueue;
@@ -11,15 +7,6 @@ import nl.hanze.t12.life.logic.Car;
 import nl.hanze.t12.life.logic.Location;
 
 public class LifeLogic extends AbstractModel implements Runnable {
-	private int size;
-	private static final int MIN_SIZE=10;
-	private static final int MAX_SIZE=50;
-	private boolean sizeIsSet;
-	
-	//private float degree;
-	//private static final float MIN_DEGREE=0.0f;
-	//private static final float MAX_DEGREE=1.0f;
-	//private boolean degreeIsSet;
 	
 	private static final String AD_HOC = "1";
 	private static final String PASS = "2";
@@ -29,22 +16,15 @@ public class LifeLogic extends AbstractModel implements Runnable {
     private CarQueue paymentCarQueue;
     private CarQueue exitCarQueue;
 
-	private boolean initRun;
-	
-//	private int[][] fieldOriginal;
-//	private int[][] fieldUnderConstruction;
     private int numberOfFloors;
     private int numberOfRows;
     private int numberOfPlaces;
     private int numberOfOpenSpots;
     public Car[][] cars;
-	//private Random r;
 
     private int day = 0;
     private int hour = 0;
     private int minute = 0;
-
-    //private int tickPause = 100;
   
     int weekDayArrivals= 100; // average number of arriving cars per hour
     int weekendArrivals = 200; // average number of arriving cars per hour
@@ -62,11 +42,6 @@ public class LifeLogic extends AbstractModel implements Runnable {
 	}
 
 	public LifeLogic() {
-		size=MIN_SIZE-1;
-		//degree=MIN_DEGREE-1;
-		sizeIsSet=false;
-		//degreeIsSet=false;
-		//r=new Random();
 		run=false;
 
         entranceCarQueue = new CarQueue();
@@ -78,33 +53,12 @@ public class LifeLogic extends AbstractModel implements Runnable {
         this.numberOfRows = 8;
         this.numberOfPlaces = 20;
         this.setNumberOfOpenSpots(numberOfRows*numberOfPlaces);
-        cars = new Car[numberOfRows][numberOfPlaces];
-        
-
-/*        Container contentPane = getContentPane();
-        contentPane.add(carParkView, BorderLayout.CENTER);
-        pack(); 
-        setVisible(true);*/
-
+        this.cars = new Car[this.numberOfRows][this.numberOfPlaces];
+        System.out.println("Model init");
 	}
+
 	
-	public void setSize(int size) throws LifeException {
-		if (size<MIN_SIZE) 
-			throw new LifeException("Size too small");
-		if (size>MAX_SIZE)
-			throw new LifeException("Size too large");
-		this.size=size;
-		sizeIsSet=true;
-		//fieldOriginal=new int[size][size];
-		//fieldUnderConstruction=new int[size][size];
-		initRun=false;
-	}
-	
-	public void doStep() throws LifeException {
-		if (!sizeIsSet)
-			throw new LifeException("Size is not set yet");
-		if (!initRun)
-			throw new LifeException("Run init first");
+	public void doStep()  {
 		calculateRound();
 		notifyViews();
 	}
@@ -114,16 +68,22 @@ public class LifeLogic extends AbstractModel implements Runnable {
 	}
 	
 	public void start() {
+		run = true;
 		new Thread(this).start();
 	}
 	
 	public void stop() {
 		run=false;
 	}
-
-	@Override
+	
 	public void run() {
-		if(true) {
+        for (int i = 0; i < 10000; i++) {
+            tick1();
+        }
+	}
+	
+	public void tick1() {
+		if(run == true) {
 			calculateRound();
 			notifyViews();
 			try {
@@ -135,36 +95,29 @@ public class LifeLogic extends AbstractModel implements Runnable {
 	}
 
 	private void calculateRound() {
-		if(run) {	
+		if(run == true) {	
 	    	//handle Entrance
-	    	carsArriving();
-	    	carsEntering(entrancePassQueue);
-	    	carsEntering(entranceCarQueue);  	
-	
+	    	handleEntrance();
+	    	
 	    	advanceTime();
 	    	// handle Exit
-	        carsReadyToLeave();
-	        carsPaying();
-	        carsLeaving();
+	        handleExit();
 		}
-		else return;
+		//else return;
     }
-
 	
+	private void handleExit(){
+        carsReadyToLeave();
+        carsPaying();
+        carsLeaving();
+    }
 	
+	private void handleEntrance(){
+    	carsArriving();
+    	carsEntering(entrancePassQueue);
+    	carsEntering(entranceCarQueue);  	
+    }
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
     private void advanceTime(){
         // Advance the time by one minute.
         minute++;
@@ -239,7 +192,7 @@ public class LifeLogic extends AbstractModel implements Runnable {
     }
 
     public Location getFirstFreeLocation() {
-        for (int floor = 0; floor < getNumberOfFloors(); floor++) {
+//        for (int floor = 0; floor < getNumberOfFloors(); floor++) {
             for (int row = 0; row < getNumberOfRows(); row++) {
                 for (int place = 0; place < getNumberOfPlaces(); place++) {
                 	Location location = new Location(row, place);
@@ -248,7 +201,7 @@ public class LifeLogic extends AbstractModel implements Runnable {
                     }
                 }
             }
-        }
+//        }
         return null;
     }
 
@@ -289,10 +242,7 @@ public class LifeLogic extends AbstractModel implements Runnable {
         }
         return true;
     }
-    
-	
-	
-	
+
     private void carsArriving(){
     	int numberOfCars=getNumberOfCars(weekDayArrivals, weekendArrivals);
         addArrivingCars(numberOfCars, AD_HOC);    	
