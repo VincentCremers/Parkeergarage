@@ -50,7 +50,7 @@ public class LifeLogic extends AbstractModel implements Runnable {
         exitCarQueue = new CarQueue();
 	
         //this.numberOfFloors = numberOfFloors;
-        this.numberOfRows = 8;
+        this.numberOfRows = 18;
         this.numberOfPlaces = 20;
         this.setNumberOfOpenSpots(numberOfRows*numberOfPlaces);
         this.cars = new Car[this.numberOfRows][this.numberOfPlaces];
@@ -98,7 +98,6 @@ public class LifeLogic extends AbstractModel implements Runnable {
 		if(run == true) {	
 	    	//handle Entrance
 	    	handleEntrance();
-	    	
 	    	advanceTime();
 	    	// handle Exit
 	        handleExit();
