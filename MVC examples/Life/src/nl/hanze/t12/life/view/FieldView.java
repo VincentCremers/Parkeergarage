@@ -60,9 +60,11 @@ public class FieldView extends AbstractView {
              	}
              }
          }
+         
          repaint();
      }
     
+     
      private void drawPlace(Graphics graphics, Location location, Color color) {
          graphics.setColor(color);
          graphics.fillRect(

@@ -281,7 +281,7 @@ public class LifeLogic extends AbstractModel implements Runnable {
         // Let cars pay.
     	int i=0;
     	while (paymentCarQueue.carsInQueue()>0 && i < paymentSpeed){
-    		Car car = paymentCarQueue.removeCar(car);
+    		Car car = paymentCarQueue.removeCar();
             // TODO Handle payment.
             carLeavesSpot(car);
             i++;
