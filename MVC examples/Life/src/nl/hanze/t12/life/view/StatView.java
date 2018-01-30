@@ -9,20 +9,19 @@ public class StatView extends AbstractView {
 
 	public StatView(LifeLogic life) {
 		super(life);
-	//	setSize(200,200);
 	}
 
-	public void paintComponent(Graphics g) {
-		g.setColor(Color.WHITE);
-		g.fillRect(0, 0, 200, 200);
+	public void paintComponent(Graphics grap) {
+		grap.setColor(Color.WHITE);
+		grap.fillRect(0, 0, 200, 200);
 		int openSpots = life.getNumberOfOpenSpots();
-		int totaalSpots = life.getNumberOfPlaces() * life.getNumberOfRows();
+		//int totaalSpots = life.getNumberOfPlaces() * life.getNumberOfRows();
 		int degree = openSpots;
 		//int notOpenSpots = life.getNumberOfPlaces() * life.getNumberOfRows() - openSpots;
 	
-		g.setColor(Color.LIGHT_GRAY);
-		g.fillArc(10, 10, 180, 180, 0, 360);
-		g.setColor(Color.BLUE);
-		g.fillArc(10, 10, 180, 180, 0, degree);		
+		grap.setColor(Color.blue);
+		grap.fillArc(10, 10, 180, 180, 0, 360);
+		grap.setColor(Color.LIGHT_GRAY);
+		grap.fillArc(10, 10, 180, 180, 90, degree);
 	}
 }

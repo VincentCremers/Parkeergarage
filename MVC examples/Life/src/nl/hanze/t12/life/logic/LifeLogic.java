@@ -20,6 +20,7 @@ public class LifeLogic extends AbstractModel implements Runnable {
     private int numberOfRows;
     private int numberOfPlaces;
     private int numberOfOpenSpots;
+    private int carsRemoved=0;
     public Car[][] cars;
 
     private int day = 0;
@@ -54,7 +55,6 @@ public class LifeLogic extends AbstractModel implements Runnable {
         this.numberOfPlaces = 20;
         this.setNumberOfOpenSpots(numberOfRows*numberOfPlaces);
         this.cars = new Car[this.numberOfRows][this.numberOfPlaces];
-        System.out.println("Model init");
 	}
 
 	
@@ -78,6 +78,7 @@ public class LifeLogic extends AbstractModel implements Runnable {
 	
 	public void run() {
         for (int i = 0; i < 10000; i++) {
+            tick();
             tick1();
         }
 	}
@@ -96,13 +97,11 @@ public class LifeLogic extends AbstractModel implements Runnable {
 
 	private void calculateRound() {
 		if(run == true) {	
-	    	//handle Entrance
-	    	handleEntrance();
 	    	advanceTime();
-	    	// handle Exit
-	        handleExit();
+	    	handleExit();
+	    	handleEntrance();
 		}
-		//else return;
+		else return;
     }
 	
 	private void handleExit(){
@@ -132,10 +131,6 @@ public class LifeLogic extends AbstractModel implements Runnable {
             day -= 7;
         }
 
-    }
-
-	public int getNumberOfFloors() {
-        return numberOfFloors;
     }
 
     public int getNumberOfRows() {
@@ -186,8 +181,21 @@ public class LifeLogic extends AbstractModel implements Runnable {
         }
         cars[location.getRow()][location.getPlace()] = null;
         car.setLocation(null);
+        setCarsRemoved(1);
         setNumberOfOpenSpots(getNumberOfOpenSpots() + 1);
         return car;
+    }
+    
+    public int getCarsRemoved() {
+    	return carsRemoved;
+    }
+    
+    public void setCarsRemoved(int waarde) {
+    	carsRemoved = getCarsRemoved()+waarde;
+    }
+    
+    public void resetCarsRemoved() {
+    	carsRemoved = 0;
     }
 
     public Location getFirstFreeLocation() {
@@ -220,13 +228,12 @@ public class LifeLogic extends AbstractModel implements Runnable {
     }
 
     public void tick() {
-      
             for (int row = 0; row < getNumberOfRows(); row++) {
                 for (int place = 0; place < getNumberOfPlaces(); place++) {
                 	Location location = new Location(row, place);
                 	Car car = getCarAt(location);
                     if (car != null) {
-                        car.tick();
+                    	car.tick();
                     }
                 }
             }
