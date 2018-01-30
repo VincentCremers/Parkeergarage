@@ -12,8 +12,9 @@ public class CarQueue {
         return queue.add(car);
     }
 
-    public Car removeCar() {
+    public Car removeCar(Car car) {
         return queue.poll();
+        
     }
 
     public int carsInQueue(){
